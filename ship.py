@@ -8,7 +8,7 @@ WINDOW_HEIGHT = 600
 WHITE = (255, 255, 255)
 BLUE = (29, 162, 216)
 FPS = 60
-shipSize = {"width": 320, "height": 200}
+shipSize = {"width": 160, "height": 100}
 
 
 class Ship(pygame.sprite.Sprite):

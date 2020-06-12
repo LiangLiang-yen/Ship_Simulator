@@ -1,7 +1,7 @@
 import sys
 
 import pygame
-from pygame.locals import QUIT
+import numpy as np
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -24,30 +24,35 @@ class Ship(pygame.sprite.Sprite):
 
 
 def main():
-    # 初始化
-    pygame.init()
-    # 建立 window 視窗畫布，大小為 800x600
-    window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    # 設置視窗標題為 Ship
-    pygame.display.set_caption('Ship')
-    # 清除畫面並填滿背景色
-    window_surface.fill(WHITE)
-    ocean = pygame.Rect(0, WINDOW_HEIGHT * 0.75, WINDOW_WIDTH, WINDOW_HEIGHT * 0.25)
-
-    shipPosition = {'x': WINDOW_WIDTH * .5, 'y': WINDOW_HEIGHT * .75 - shipSize['height']}
-    ship = Ship(shipSize['width'], shipSize['height'], shipPosition['x'], shipPosition['y'])
+    pygame.init()  # Initialization
+    window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create window surface
+    pygame.display.set_caption('Ship')  # Set window title
+    window_surface.fill(WHITE)  # Clear surface and fill background color
+    ocean = pygame.Rect(0, WINDOW_HEIGHT * 0.75, WINDOW_WIDTH, WINDOW_HEIGHT * 0.25)  # Ocean Create
+    shipPosition = {'x': WINDOW_WIDTH * .5, 'y': WINDOW_HEIGHT * .75 - shipSize['height']}  # Ship Create
+    # Accelerate Initialization
+    accel_x = 0
+    change_x = 0
 
     main_clock = pygame.time.Clock()
     while True:  # 死迴圈確保視窗一直顯示
         if pygame.key.get_pressed()[pygame.K_LEFT]:
-            if shipPosition['x'] - 5 > 0:
-                shipPosition['x'] = shipPosition['x'] - 5
+            accel_x = -.2
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            shipPosition['x'] = shipPosition['x'] + 5
+            accel_x = .2
         for event in pygame.event.get():  # 遍歷所有事件
             if event.type == pygame.QUIT:  # 如果單擊關閉視窗，則退出
                 sys.exit()
+            elif event.type == pygame.KEYUP:
+                accel_x = 0
 
+        # Accelerate
+        change_x += accel_x
+        if change_x + shipPosition['x'] >= WINDOW_WIDTH - shipSize['width']:
+            change_x = 0
+        elif change_x + shipPosition['x'] <= 0:
+            change_x = 0
+        shipPosition['x'] += change_x
         # Clear Surface
         window_surface.fill(WHITE)
         # Draw Ocean

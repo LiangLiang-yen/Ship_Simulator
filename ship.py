@@ -29,7 +29,7 @@ def main():
     pygame.display.set_caption('Ship')  # Set window title
     window_surface.fill(WHITE)  # Clear surface and fill background color
     ocean = pygame.Rect(0, WINDOW_HEIGHT * 0.75, WINDOW_WIDTH, WINDOW_HEIGHT * 0.25)  # Ocean Create
-    shipPosition = {'x': WINDOW_WIDTH * .5, 'y': WINDOW_HEIGHT * .75 - shipSize['height']}  # Ship Create
+    shipPosition = {'x': WINDOW_WIDTH - shipSize['width'], 'y': WINDOW_HEIGHT * .75 - shipSize['height']}  # Ship Create
     # Accelerate Initialization
     accel_x = 0
     change_x = 0
@@ -37,9 +37,9 @@ def main():
     main_clock = pygame.time.Clock()
     while True:  # 死迴圈確保視窗一直顯示
         if pygame.key.get_pressed()[pygame.K_LEFT]:
-            accel_x = -.2
+            accel_x = -3.0
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            accel_x = .2
+            accel_x = 3.0
         for event in pygame.event.get():  # 遍歷所有事件
             if event.type == pygame.QUIT:  # 如果單擊關閉視窗，則退出
                 sys.exit()
@@ -47,11 +47,11 @@ def main():
                 accel_x = 0
 
         # Accelerate
-        change_x += accel_x
-        if change_x + shipPosition['x'] >= WINDOW_WIDTH - shipSize['width']:
-            change_x = 0
-        elif change_x + shipPosition['x'] <= 0:
-            change_x = 0
+        change_x = accel_x
+        # if change_x + shipPosition['x'] >= WINDOW_WIDTH - shipSize['width']:
+        #     change_x = 0
+        # elif change_x + shipPosition['x'] <= 0:
+        #     change_x = 0
         shipPosition['x'] += change_x
         # Clear Surface
         window_surface.fill(WHITE)

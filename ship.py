@@ -1,7 +1,9 @@
-import sys
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
+import sys
 import pygame
-import numpy as np
+from decimal import Decimal
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -9,6 +11,7 @@ WHITE = (255, 255, 255)
 BLUE = (29, 162, 216)
 FPS = 60
 shipSize = {"width": 160, "height": 100}
+resistance = Decimal('0.05')
 
 
 class Ship(pygame.sprite.Sprite):
@@ -31,22 +34,31 @@ def main():
     ocean = pygame.Rect(0, WINDOW_HEIGHT * 0.75, WINDOW_WIDTH, WINDOW_HEIGHT * 0.25)  # Ocean Create
     shipPosition = {'x': WINDOW_WIDTH - shipSize['width'], 'y': WINDOW_HEIGHT * .75 - shipSize['height']}  # Ship Create
     # Accelerate Initialization
-    accel_x = 0
-    change_x = 0
+    accel_x = Decimal('0')
+    decrease = False
 
     main_clock = pygame.time.Clock()
     while True:  # 死迴圈確保視窗一直顯示
         if pygame.key.get_pressed()[pygame.K_LEFT]:
-            accel_x = -3.0
+            accel_x = Decimal('-3.0')
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            accel_x = 3.0
+            accel_x = Decimal('3.0')
         for event in pygame.event.get():  # 遍歷所有事件
             if event.type == pygame.QUIT:  # 如果單擊關閉視窗，則退出
                 sys.exit()
             elif event.type == pygame.KEYUP:
-                accel_x = 0
+                decrease = True
 
         # Accelerate
+        if decrease is True and abs(accel_x) > 0:
+            if accel_x > 0:
+                accel_x -= resistance
+            else:
+                accel_x += resistance
+        else:
+            decrease = False
+
+        # print(accel_x)
         change_x = accel_x
         # if change_x + shipPosition['x'] >= WINDOW_WIDTH - shipSize['width']:
         #     change_x = 0

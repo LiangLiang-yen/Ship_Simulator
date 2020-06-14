@@ -1,5 +1,5 @@
 from os import environ
-environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'  # Disable pygame show text when run pygame application
 
 import sys
 import pygame
@@ -11,7 +11,7 @@ WHITE = (255, 255, 255)
 BLUE = (29, 162, 216)
 FPS = 60
 shipSize = {"width": 160, "height": 100}
-resistance = Decimal('0.05')
+resistance = Decimal('0.05')  # Use decimal can get more Accuracy number
 
 
 class Ship(pygame.sprite.Sprite):

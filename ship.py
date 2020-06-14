@@ -18,7 +18,7 @@ resistance = Decimal('0.05')
 class Ship_topView(pygame.sprite.Sprite):
     def __init__(self, width, height, x, y, *groups):
         super().__init__(*groups)
-        self.raw_image = pygame.image.load("ship_topView.jpg").convert_alpha()
+        self.raw_image = pygame.image.load('ship_topView_img.png').convert_alpha()
         # 縮小圖片
         self.image = pygame.transform.scale(self.raw_image, (width, height))
         # 回傳位置
@@ -52,7 +52,7 @@ def main():
     shipPosition = {'x': Screen[1]['x'] + Screen[1]['width'] - shipSize['width'],
                     'y': Screen[1]['height'] * .75 - shipSize['height']}  # Ship Create
     ship_topView_Position = {'x': Screen[2]['x'] + Screen[2]['width'] - shipSize['width'],
-                             'y': Screen[2]['height'] * .5}  # Ship Create
+                             'y': Screen[2]['height'] * .5 - shipSize['height'] * .5}  # Ship Create
 
     # Accelerate Initialization
     accel_x = Decimal('0')

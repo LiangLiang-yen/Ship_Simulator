@@ -19,25 +19,16 @@ speed = Decimal('1.0')
 pygame.init()  # Initialization
 window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create window surface
 pygame.display.set_caption('Ship')  # Set window title
-
-
-class Ship_topView:
-    def __init__(self, width, height, x, y):
-        self.raw_image = pygame.image.load('ship_topView_img.png').convert_alpha()  # load image
-        self.image = pygame.transform.scale(self.raw_image, (width, height))  # scale image
-        self.rect = self.image.get_rect()  # return position
-        self.rect.topleft = (x, y)  # set position
+clock = pygame.time.Clock()
+clock.tick(FPS)
 
 
 class Ship:
-
     def __init__(self, width, height, x, y):
-        self.x = x
-        self.y = y
+        self.x = Decimal(str(x))
+        self.y = Decimal(str(y))
         self.raw_image = pygame.image.load("ship_img.png").convert_alpha()
         self.image = pygame.transform.scale(self.raw_image, (width, height))  # scale image
-        self.rect = self.image.get_rect()  # return position
-        self.rect.topleft = (x, y)  # set position
         self.ACC_X = 0
 
     def move(self, position_x):
@@ -53,12 +44,32 @@ class Ship:
             self.x += self.ACC_X
 
     def draw(self):
-        print(self.x)
         rect = self.image.get_rect(topleft=(self.x, self.y))
         window_surface.blit(self.image, rect)
 
 
-def draw_win(ship):
+class Ship_topView(Ship):
+    def __init__(self, width, height, x, y):
+        super().__init__(width, height, x, y)
+        self.raw_image = pygame.image.load("ship_topView_img.png").convert_alpha()
+        self.image = pygame.transform.scale(self.raw_image, (width, height))  # scale image
+        self.ACC_Y = 0
+
+    def move_vertical(self, position_y):
+        self.ACC_Y = position_y
+        self.y += self.ACC_Y
+
+    def stop(self):
+        super().stop()
+        if abs(self.ACC_Y) > 0:
+            if self.ACC_Y > 0:
+                self.ACC_Y -= resistance
+            else:
+                self.ACC_Y += resistance
+            self.y += self.ACC_Y
+
+
+def draw_win(ship1, ship2):
     ocean1 = pygame.Rect(Screen[1]['x'], Screen[1]['y'] + Screen[1]['height'] * .75,
                          Screen[1]['width'], Screen[1]['height'] * .25)  # Ocean1 Create
     ocean2 = pygame.Rect(Screen[2]['x'], Screen[2]['y'],
@@ -68,7 +79,8 @@ def draw_win(ship):
     pygame.draw.rect(window_surface, BLUE, ocean1)
     pygame.draw.rect(window_surface, BLUE, ocean2)
     # Draw Ship
-    ship.draw()
+    ship1.draw()
+    ship2.draw()
     pygame.display.update()
 
 
@@ -79,17 +91,29 @@ def main():
                              'y': Screen[2]['height'] * .5 - shipSize['height'] * .5}  # Ship Create
 
     ship = Ship(shipSize['width'], shipSize['height'], shipPosition['x'], shipPosition['y'])
+    ship_topView = Ship_topView(shipSize['width'], shipSize['height'], ship_topView_Position['x'],
+                                ship_topView_Position['y'])
     while True:  # 死迴圈確保視窗一直顯示
         if pygame.key.get_pressed()[pygame.K_LEFT]:
             ship.move(-speed)
-        elif pygame.key.get_pressed()[pygame.K_RIGHT]:
+            ship_topView.move(-speed)
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:
             ship.move(speed)
-        else:
+            ship_topView.move(speed)
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            ship_topView.move_vertical(-speed)
+        if pygame.key.get_pressed()[pygame.K_DOWN]:
+            ship_topView.move_vertical(speed)
+        if not pygame.key.get_pressed()[pygame.K_LEFT] and \
+                not pygame.key.get_pressed()[pygame.K_RIGHT] and \
+                not pygame.key.get_pressed()[pygame.K_UP] and \
+                not pygame.key.get_pressed()[pygame.K_DOWN]:
             ship.stop()
+            ship_topView.stop()
         for event in pygame.event.get():  # 遍歷所有事件
             if event.type == pygame.QUIT:  # 如果單擊關閉視窗，則退出
                 sys.exit()
-        draw_win(ship)
+        draw_win(ship, ship_topView)
 
 
 main()

@@ -20,6 +20,7 @@ pygame.init()  # Initialization
 window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create window surface
 pygame.display.set_caption('Ship')  # Set window title
 clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 40)  # Show text
 clock.tick(FPS)
 
 
@@ -44,7 +45,10 @@ class Ship:
             self.x += self.ACC_X
 
     def draw(self):
+        global font
+        text = font.render("ACC_X: {}".format(self.ACC_X), True, (0, 0, 0))
         rect = self.image.get_rect(topleft=(self.x, self.y))
+        window_surface.blit(text, text.get_rect(topleft=(0, 0)))
         window_surface.blit(self.image, rect)
 
 
@@ -67,6 +71,12 @@ class Ship_topView(Ship):
             else:
                 self.ACC_Y += resistance
             self.y += self.ACC_Y
+
+    def draw(self):
+        super().draw()
+        global font
+        text = font.render("ACC_Y: {}".format(self.ACC_Y), True, (0, 0, 0))
+        window_surface.blit(text, text.get_rect(topleft=(0, 40)))
 
 
 def draw_win(ship1, ship2):
